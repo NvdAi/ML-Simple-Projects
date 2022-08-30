@@ -1,8 +1,8 @@
-# Simple_coin_counting_by_clustering:
+# Simple coin counting by clustering:
 I will be doing a clustering on images. Images are also same as datapoints in regular ML and can considered as similar issue.
 Similarity may mean to be similar looking images or may be similar size or may be similar pixel distribution, similar background etc. For different use cases, we have to derive specific image vector. ie, The image vector containing the entity of an image(contains cat or dog) will be different to an image vector having pixel distributions.
 
-## My Projet:
+## My Project:
 * DATA : My dataset consists of 9 images with a black background, in each image I have placed some coins. I have prepared this small dataset myself.
 
 * CODE : First point; To use this code, the background of your images must be black and matte. if there is a background with another color, you may need to change the method to remove the background.
@@ -15,6 +15,7 @@ STEP_4 : fit array  on model and get the labels from model to find number of coi
 i do LEN SET labels -1 (-1 means background cluster).
 
 ### Some Figures:
+
 <img src="Output/Figure_1.png" width="1800" height="600"> 
 
 <img src="Output/Figure_3.png" width="1800" height="600">                                
