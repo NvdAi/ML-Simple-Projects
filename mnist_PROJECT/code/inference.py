@@ -1,29 +1,56 @@
+import imp
+from statistics import mode
 import numpy as np
 from scipy.special import softmax
 import cv2
 import matplotlib.pyplot as plt
+import argparse
+import torch
+from torchvision.datasets import MNIST
+from torchvision.transforms import Compose
+from torchvision.transforms import ToTensor
+from torchvision.transforms import Normalize
+from torch.utils.data import DataLoader
 
-class chek_digit():
-    def __init__(self, variables_path, img_path, n_classes,index):
-        self.values = np.load(variables_path)
-        self.image = img_path
-        self.n_classes = n_classes
-        self.index = index
+from model import CNN
 
-    def make_onehot(self, *args, **kwargs):
-        n_classes = self.n_classes
-        temp = np.zeros((n_classes, ))
-        temp[kwargs['pred']]=1
-        one_hot = temp[::-1]
-        final_pred  = np.argmax(one_hot)
-        return final_pred
+PATH = '../MNIST_dataset'
+MEAN = 0.1307
+STD = 0.3081
+def main(arg):
+    print(f"model_path: {arg.model_path}")
 
-    def gess_digit(self):
-        image = self.image
-        my_model = self.values["name3"]
-        my_bias = self.values["name4"]
-        logit = np.matmul(image.reshape(1, image.shape[0]),my_model) + my_bias
-        pred = np.argmax(logit)
-        self.final_pred = self.make_onehot(pred=pred)
-        return True
- 
+    model = CNN(1)
+    model.load_state_dict(torch.load(arg.model_path))
+
+    trans = Compose([ToTensor(), Normalize((MEAN,), (STD,))])
+    # load dataset
+    test = MNIST(PATH, train=False, download=True, transform=trans)
+    # prepare data loaders
+    test_dl = DataLoader(test, batch_size=6, shuffle=True)
+
+    # for i, (inputs, targets) in enumerate(test_dl):
+    inputs, targets = next(iter(test_dl))
+    yhat = model(inputs)
+    yhat = yhat.cpu().detach().numpy()
+    yhat = np.argmax(yhat, axis=1)
+    print("yhat", yhat)
+    print("targets", targets)
+
+    inputs = (inputs * STD) + MEAN
+    print("inputs", inputs.shape)
+    plt.imshow(inputs[0,0,:,:])
+    plt.show()
+    # cv2.imshow("a", inputs.numpy()[0,0,:,:])
+    # cv2.waitKey(0)
+
+
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--model_path', type=str, required=True, help='configuration path')
+    # parser.add_argument('--img_path', type=int, help='Number of data loading workers', default=4)
+    args = parser.parse_args()
+
+    main(args)

@@ -1,0 +1,5 @@
+mnist_PROJECT/checkpoints
+mnist_PROJECT/MNIST_dataset/MNIST
+mnist_PROJECT/code/runs
+
+*.cpython-38.pyc
